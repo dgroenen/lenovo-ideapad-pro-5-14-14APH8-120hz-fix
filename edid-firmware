@@ -1,0 +1,24 @@
+#!/bin/sh -e
+
+PREREQS=""
+
+prereqs() {
+	echo "$PREREQS";
+}
+
+case "$1" in
+	prereqs)
+	prereqs
+	exit 0
+	;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+if [ ! -e "${DESTDIR}/lib/firmware/edid" ]; then
+    mkdir -p "${DESTDIR}/lib/firmware/edid"
+fi
+
+if [ -d "/lib/firmware/edid" ]; then
+  cp -a /lib/firmware/edid/* "${DESTDIR}/lib/firmware/edid/"
+fi
