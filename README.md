@@ -15,7 +15,7 @@ As root:
 2. Copy the fixed EDID `edid.bin` from this repository to `/lib/firmware/edid/`.
 3. Ensure the fixed EDID gets included in your initramfs. For Debian and derivatives, you can use the `edid-firmware` initramfs hook from this repo: copy it to `/etc/initramfs-tools/hooks/`.
 
-   For Arch and derivatives, you can use the `edid-firmware.arch` mkinitcpio hook from this repo: copy it as `/etc/mkinitcpio/install/edid-firmware`.
+   For Arch and derivatives, you can use the `edid-firmware.arch` mkinitcpio hook from this repo: copy it as `/usr/lib/initcpio/install/edid-firmware`.
 Then, add `edid-firmware` to the HOOKS section in `/etc/mkinitcpio.conf`.
 4. Recreate your initramfs, e.g. on Debian run: `update-initramfs -c -k all`. On Arch run: `mkinitcpio --allpresets`.
 4. Modify your kernel command line to use the fixed EDID by including `drm.edid_firmware=eDP-1:edid/edid.bin`. If you use GRUB as your bootloader, add this command to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` and run `update-grub` thereafter.
