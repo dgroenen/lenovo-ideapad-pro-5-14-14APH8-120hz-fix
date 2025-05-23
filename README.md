@@ -17,9 +17,11 @@ As root:
 
    For Arch and derivatives, you can use the `edid-firmware.arch` mkinitcpio hook from this repo: copy it as `/etc/initcpio/install/edid-firmware`.
 Then, add `edid-firmware` to the HOOKS section in `/etc/mkinitcpio.conf`.
-4. Recreate your initramfs, e.g. on Debian run: `update-initramfs -c -k all`. On Arch run: `mkinitcpio --allpresets`.
-4. Modify your kernel command line to use the fixed EDID by including `drm.edid_firmware=eDP-1:edid/edid.bin`. If you use GRUB as your bootloader, add this command to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` and run `update-grub` thereafter.
-5. Reboot and verify you now have 120hz:
+
+   For Fedora this is handled by Dracut. Add `00-lenovo-14aph8-edid.conf` to `/etc/dracut/conf.d/`.
+4. Recreate your initramfs, e.g. on Debian run: `update-initramfs -c -k all`. On Arch run: `mkinitcpio --allpresets`. On Fedora run: `sudo dracut -f`.
+5. Modify your kernel command line to use the fixed EDID by including `drm.edid_firmware=eDP-1:edid/edid.bin`. If you use GRUB as your bootloader, add this command to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` and run `update-grub` thereafter. On Fedora run `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` instead.
+6. Reboot and verify you now have 120hz:
 
 ![image of 120hz working](120hz_fixed.png)
 
