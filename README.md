@@ -13,14 +13,18 @@ Note that the provided fixed EDID in this repository only applies to this laptop
 As root:
 1. Create a directory `/lib/firmware/edid/`.
 2. Copy the fixed EDID `edid.bin` from this repository to `/lib/firmware/edid/`.
-3. Ensure the fixed EDID gets included in your initramfs. For Debian and derivatives, you can use the `edid-firmware` initramfs hook from this repo: copy it to `/etc/initramfs-tools/hooks/`.
-
-   For Arch and derivatives, you can use the `edid-firmware.arch` mkinitcpio hook from this repo: copy it as `/etc/initcpio/install/edid-firmware`.
-Then, add `edid-firmware` to the HOOKS section in `/etc/mkinitcpio.conf`.
-
-   For Fedora this is handled by Dracut. Add `00-lenovo-14aph8-edid.conf` to `/etc/dracut/conf.d/`.
-4. Recreate your initramfs, e.g. on Debian run: `update-initramfs -c -k all`. On Arch run: `mkinitcpio --allpresets`. On Fedora run: `sudo dracut -f`.
-5. Modify your kernel command line to use the fixed EDID by including `drm.edid_firmware=eDP-1:edid/edid.bin`. If you use GRUB as your bootloader, add this command to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` and run `update-grub` thereafter. On Fedora run `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` instead.
+3. Ensure the fixed EDID gets included in your initramfs.
+   - For Debian and derivatives, you can use the `debian/edid-firmware` initramfs hook from this repo: copy it to `/etc/initramfs-tools/hooks/`.
+   - For Arch and derivatives, you can use the `arch/edid-firmware` mkinitcpio hook from this repo: copy it to `/etc/initcpio/install/edid-firmware`. Then, add `edid-firmware` to the `HOOKS` section in `/etc/mkinitcpio.conf`.
+   - For Fedora this is handled by Dracut. Add `fedora/00-lenovo-14aph8-edid.conf` to `/etc/dracut/conf.d/`.
+4. Recreate your initramfs.
+   - Debian: run `update-initramfs -c -k all`.
+   - Arch: run `mkinitcpio --allpresets`.
+   - Fedora: run `sudo dracut -f`.
+5. Modify your kernel command line to use the fixed EDID by including `drm.edid_firmware=eDP-1:edid/edid.bin`. If you use GRUB as your bootloader, add this command to `GRUB_CMDLINE_LINUX_DEFAULT` in `/etc/default/grub` and then update your GRUB configuration file:
+   - Debian: run `update-grub`.
+   - Arch: run `grub-mkconfig -o /boot/grub/grub.cfg`.
+   - Fedora: run `sudo grub2-mkconfig -o /boot/grub2/grub.cfg`.
 6. Reboot and verify you now have 120hz:
 
 ![image of 120hz working](120hz_fixed.png)
