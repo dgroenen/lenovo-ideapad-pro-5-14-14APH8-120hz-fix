@@ -36,8 +36,13 @@ Modern display devices ship with a so-called [EDID](https://en.wikipedia.org/wik
 The extension block is verified by a checksum calculation so the driver can check if the block isn't corrupt. Unfortunately, this checksum is invalid, causing the 2880x1800 @ 120Hz mode to be disregarded in Linux, hence the `[drm] DisplayID checksum invalid, remainder is 248` error in your kernel log.
 
 The problem can be fixed by overriding the built-in EDID with a fixed one, which is provided in this repository. It is crafted as follows:
-1. Extract the original EDID: `cat /sys/class/drm/card0-eDP-1/edid > edid.original.bin`
-2. Inspect the EDID with an hexdump: `hexdump -vC edid.original.bin`. The EDID is 256bytes big, of which the last 128 bytes are the extension block. The first two bytes of the extension block contain header identifiers, the last two bytes can be used to influence checksum calculation:
+1. Extract the original EDID: `cat /sys/class/drm/card0-eDP-1/edid > edid.original.bin`. You may have a number of embedded didplay ports (eDP), but one of them will refer to the active display with the wrong EDID. For example:
+```
+$ ls /sys/class/drm/ | grep eDP
+card1-eDP-1
+card2-eDP-2
+```
+2. Inspect the EDID with an hexdump: `hexdump -vC edid.original.bin`. The EDID is 256bytes big, of which the last 128 bytes are the extension block. The first two bytes of the extension block contain header identifiers, the last two bytes can be used to influence checksum calculation. You can also use `edid-decode < edid.original.bin` to get a human-readable output.
 ```
 00000000  00 ff ff ff ff ff ff 00  0e 6f 16 14 00 00 00 00  |.........o......|
 00000010  00 20 01 04 b5 1e 13 78  03 21 15 a8 53 49 9c 25  |. .....x.!..SI.%|
@@ -61,7 +66,7 @@ The problem can be fixed by overriding the built-in EDID with a fixed one, which
                          Extension block checksum byte _/
 00000100
 ```
-3. Recalculate the checksum of the DiplayID extension block and then the surrounding extension block, and optionally fix the DisplayID magic value from 0x13 to 0x12:
+3. Recalculate the checksum of the DiplayID extension block and then the surrounding extension block, and optionally fix the DisplayID magic value from 0x13 to 0x12. `edid-decode` will inform you what the correct checksum should be if it was incorrect. `hexedit` and `vbindiff` are handy tools for editing binary data.
 ```
 --- edid.original.hex   2023-08-23 11:47:39.355357198 +0200
 +++ edid.hex    2023-08-23 11:47:47.019450296 +0200
