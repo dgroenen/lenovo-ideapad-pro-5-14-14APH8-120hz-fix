@@ -36,7 +36,7 @@ Modern display devices ship with a so-called [EDID](https://en.wikipedia.org/wik
 The extension block is verified by a checksum calculation so the driver can check if the block isn't corrupt. Unfortunately, this checksum is invalid, causing the 2880x1800 @ 120Hz mode to be disregarded in Linux, hence the `[drm] DisplayID checksum invalid, remainder is 248` error in your kernel log.
 
 The problem can be fixed by overriding the built-in EDID with a fixed one, which is provided in this repository. It is crafted as follows:
-1. Extract the original EDID: `cat /sys/class/drm/card0-eDP-1/edid > edid.original.bin`. You may have a number of embedded didplay ports (eDP), but one of them will refer to the active display with the wrong EDID. For example:
+1. Extract the original EDID: `cat /sys/class/drm/card0-eDP-1/edid > edid.original.bin`. You may have a number of embedded display ports (eDP), but one of them will refer to the active display with the wrong EDID. For example:
 ```
 $ ls /sys/class/drm/ | grep eDP
 card1-eDP-1
